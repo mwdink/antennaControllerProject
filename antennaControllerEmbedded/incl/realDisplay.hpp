@@ -25,7 +25,11 @@ realDisplay.hpp
 
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
 /*-------------------------- Typedefs and structs ---------------------------*/
+class LiquidCrystal;
+
 /*----------------------- Declarations (externs only) -----------------------*/
+extern LiquidCrystal *pDisplay;
+
 /*------------------------------ Declarations -------------------------------*/
 /*------------------------------- Prototypes --------------------------------*/
 class RealDisplay

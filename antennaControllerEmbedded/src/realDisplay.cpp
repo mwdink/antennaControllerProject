@@ -18,125 +18,66 @@ realDisplay.cpp
 
 *//***************************************************************************/
 /*----------------------------- Nested includes -----------------------------*/
-#include "realStorage.hpp"
-#include "EEPROM.h"
+#include "realDisplay.hpp"
+#include "LiquidCrystal.h"
 #include "stdio.h"
 
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
 /*-------------------------- Typedefs and structs ---------------------------*/
 /*----------------------- Declarations (externs only) -----------------------*/
 /*------------------------------ Declarations -------------------------------*/
-EEPROMClass *pStorage;
-const int16_t defaultCount = 0x03e7;  //999 decimal
-const int16_t maxStorageSizeInBytes = 200;
+LiquidCrystal *pDisplay = 0;
+
+static const uint8_t ROW1 = (uint8_t)0;
+static const uint8_t ROW2 = (uint8_t)ROW1+1;
+static const uint8_t COLUMN0 = (uint8_t)0;
+static const uint8_t CONTROLHEADINGCOLUMN = (uint8_t)0;
+static const uint8_t ROTATORHEADINGCOLUMN = (uint8_t)13;
+static const uint8_t TOTALROWS = (uint8_t)2;
+static const uint8_t TOTALCOLUMNS = (uint8_t)16;
+
+/* digital GPIO */
+static const uint8_t LCD_RS = (uint8_t)12;      //Arduino digital pin 12
+static const uint8_t LCD_ENABLE = (uint8_t)11;  //Arduino digital pin 11
+static const uint8_t LCD_D4 = (uint8_t)7;       //Arduino digital pin 7
+static const uint8_t LCD_D5 = (uint8_t)6;       //Arduino digital pin 6
+static const uint8_t LCD_D6 = (uint8_t)5;       //Arduino digital pin 5
+static const uint8_t LCD_D7 = (uint8_t)4;       //Arduino digital pin 4
+
+const char headerMsg[] = "Tic Ring";
+//const char errorMsg[] = "Error!";
+//const char blank3Msg[] = "   ";
+//const char blank10Msg[] = "          ";
+//const char twoZeroPad[] = "00 ";
+//const char oneZeroPad[] = "0  ";
+//const char rotatingMsg[] = "Rotating";
+//const char idleMsg[] = "Idle";
+//const char rightArrow[] = ">";
+//const char leftArrow[] = "<";
 
 /*---------------------------------- Functions ------------------------------*/
 
 
-/*!Function         RealStorage::RealStorage
+/*!Function         RealDisplay::RealDisplay
 *   \param
 *   \return
 *   \par Purpose    ctor
 */
-RealStorage::RealStorage():
-m_Count(0),
-m_Offset(0),
-m_MaxStorageSizeInBytes(maxStorageSizeInBytes)    //100 words
+RealDisplay::RealDisplay()
 {
-    pStorage = new EEPROMClass;
+    pDisplay = new LiquidCrystal(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 }
 
-/*!Function         RealStorage::~RealStorage
+/*!Function         RealDisplay::~RealDisplay
 *   \param
 *   \return
 *   \par Purpose    dtor
 */
-RealStorage::~RealStorage()
+RealDisplay::~RealDisplay()
 {
-    delete pStorage;
-}
-
-/*!Function         RealStorage::resetStorage
-*   \param          void
-*   \return         void
-*   \par Purpose    clear out the area used for
-*                   storage of the motor positional counts
-*   \note           we're writing int16_t values so increment
-*                   appropriately
-*/
-void
-RealStorage::resetStorage(void)
-{
-    printf("resetStorage\n");
-    for(int16_t addr = 0x0000; addr < maxStorageSizeInBytes; addr+=2)
+    if(pDisplay != 0)
     {
-        pStorage->writeInt((int)addr, defaultCount);
+        delete pDisplay;
     }
-    m_Offset = 0;
 }
 
-/*!Function         RealStorage::getOffset
-*   \param          uint16_t
-*   \return         void
-*   \par Purpose    return the offset into eeprom where the next
-*                   count update should be written
-*/
-uint16_t
-RealStorage::getOffset(void)
-{
-    return m_Offset;
-}
-
-/*!Function         RealStorage::getStoredCount
-*   \param          uint16_t
-*   \return         void
-*   \par Purpose    return the motor positional count value. do this by
-*                   reading each value in the storage area (first 100 words
-*                   in the eeprom). the actual value we want is the last
-*                   valid (!=999)
-*/
-int16_t
-RealStorage::getStoredCount(void)
-{
-    for(int16_t addr = 0x0000; addr < m_MaxStorageSizeInBytes; addr+=2)
-    {
-        m_Count = pStorage->readInt((int)addr);
-        m_Offset = addr+2; //next place to write next update
-
-        if(m_Count >= defaultCount)
-        {
-            if(addr > 0)
-            {
-                m_Offset = addr; //next place to write next update
-                addr-=2;          //address of last valid value
-                m_Count = pStorage->readInt((int)addr);  //last valid value
-            }
-            else //defaults
-            {
-                m_Offset = 0;
-                m_Count = 0;
-            }
-            break;
-        }
-    }
-    printf("getStoredCount, count:%d,  offset:%d\n", m_Count, m_Offset);
-    return m_Count;
-}
-
-/*!Function         RealStorage::storeCount
-*   \param          uint16_t
-*   \return         void
-*   \par Purpose    save the motor positional count value in eeprom and
-*                   update the offset to the next address (valid == 999)
-*/
-void
-RealStorage::storeCount(int16_t value)
-{
-    if(!(m_Offset < m_MaxStorageSizeInBytes))
-    {
-        resetStorage();
-    }
-    printf("storeCount:%d at %d\n", value, m_Offset);
-    pStorage->writeInt((int)m_Offset, value);
-    m_Offset+=2;
-}

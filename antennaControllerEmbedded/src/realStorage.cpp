@@ -53,7 +53,10 @@ m_MaxStorageSizeInBytes(maxStorageSizeInBytes)    //100 words
 */
 RealStorage::~RealStorage()
 {
-    delete pStorage;
+    if(pStorage != 0)
+    {
+        delete pStorage;
+    }
 }
 
 /*!Function         RealStorage::resetStorage
@@ -67,7 +70,7 @@ RealStorage::~RealStorage()
 void
 RealStorage::resetStorage(void)
 {
-    printf("resetStorage\n");
+    //printf("resetStorage\n");
     for(int16_t addr = 0x0000; addr < maxStorageSizeInBytes; addr+=2)
     {
         pStorage->writeInt((int)addr, defaultCount);
@@ -119,7 +122,7 @@ RealStorage::getStoredCount(void)
         	break;
         }
     }
-    printf("getStoredCount, count:%d,  offset:%d\n", m_Count, m_Offset);
+    //printf("getStoredCount, count:%d,  offset:%d\n", m_Count, m_Offset);
     return m_Count;
 }
 
@@ -136,7 +139,7 @@ RealStorage::storeCount(int16_t value)
 	{
 		resetStorage();
 	}
-    printf("storeCount:%d at %d\n", value, m_Offset);
+    //printf("storeCount:%d at %d\n", value, m_Offset);
     pStorage->writeInt((int)m_Offset, value);
     m_Offset+=2;
 }
