@@ -24,6 +24,7 @@
 #include "bsp.h"
 #include "switchControl.hpp"
 #include "realStorage.hpp"
+#include "realDisplay.hpp"
 
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
 Q_DEFINE_THIS_FILE
@@ -42,15 +43,16 @@ uint32_t lastInterruptTick = 0;
 const uint32_t ticksFor20mSec = 2;              /* 20 msec */
 const uint32_t ticksFor30mSec = 3;              /* 30 msec */
 const uint32_t ticksFor100mSec = 10;            /* 100 msec */
-//const uint32_t ticksFor500mSec = 50;            /* 500 msec */
 
 RealSwitches realSwitches;
 RealMotor realMotor;
 RealStorage realStorage;
+RealDisplay *pRealDisplay;
 
 void reedRelayISR(void);
 void processSwitches(void);
 void processCountUpdate(void);
+void initializeDisplay(void);
 
 /*---------------------------------- Functions ------------------------------*/
 
@@ -202,6 +204,7 @@ void
 QP::QF::onIdle()
 {
     static uint32_t lastTickCount = 0;
+    static bool displayInitialized = false;
 
     BSP_dispatchSwitchEvent();
     BSP_dispatchMotorEvent();
@@ -209,6 +212,15 @@ QP::QF::onIdle()
     if(tickCount != lastTickCount)
     {
         lastTickCount = tickCount;
+
+        if(false == displayInitialized)
+        {
+            if(tickCount > ticksFor100mSec)
+            {
+                initializeDisplay();
+                displayInitialized = true;
+            }
+        }
 
         //process switches every 30 mSeconds
         if(0 == (tickCount%ticksFor30mSec))
@@ -409,16 +421,52 @@ void
 processCountUpdate(void)
 {
     static int16_t lastCount = 0;
+    bool countIncreasing = true;
     int16_t count = pMotorControlObj->getMotorPulseCount();
 
     if(lastCount != count)
     {
+        if(count < lastCount)
+        {
+            countIncreasing = false;
+        }
+
         lastCount = count;
         realStorage.storeCount(count);
+
+        if(pRealDisplay)
+        {
+            if(true == countIncreasing)
+            {
+                pRealDisplay->updateDisplay(DISPLAY_DOWN, count);
+            }
+            else
+            {
+                pRealDisplay->updateDisplay(DISPLAY_UP, count);
+            }
+        }
     }
 }
 
+/*!Function         initializeDisplay
+*   \param          void
+*   \return         void
+*   \par Purpose    create display object and display the banner
+*   \note           this will run once at startup, we need at least
+*                   40ms after power rises above 2.7V before sending
+*                   commands. Arduino can be active way before this
+*                   we'll wait 100ms
+*/
+void
+initializeDisplay(void)
+{
+    pRealDisplay = new RealDisplay;
 
-
+    if(pRealDisplay)
+    {
+        pRealDisplay->updateDisplay(DISPLAY_CONFIG, 0);
+        pRealDisplay->updateDisplay(DISPLAY_BANNER, 0);
+    }
+}
 
 

@@ -89,15 +89,19 @@ void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
   _numlines = lines;
   _currline = 0;
 
+#if 0
   // for some 1 line displays you can select a 10 pixel high font
   if ((dotsize != 0) && (lines == 1)) {
     _displayfunction |= LCD_5x10DOTS;
   }
+#endif
 
   // SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
   // according to datasheet, we need at least 40ms after power rises above 2.7V
   // before sending commands. Arduino can turn on way befer 4.5V so we'll wait 50
-  delayMicroseconds(50000); 
+#if 0  //do this in the system init
+  delayMicroseconds(50000);
+#endif
   // Now we pull both RS and R/W low to begin commands
   digitalWrite(_rs_pin, LOW);
   digitalWrite(_enable_pin, LOW);
