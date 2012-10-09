@@ -23,12 +23,11 @@ realStorage.cpp
 #include "stdio.h"
 
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
+
+
 /*-------------------------- Typedefs and structs ---------------------------*/
 /*----------------------- Declarations (externs only) -----------------------*/
 /*------------------------------ Declarations -------------------------------*/
-EEPROMClass *pStorage;
-const int16_t defaultCount = 0x03e7;  //999 decimal
-const int16_t maxStorageSizeInBytes = 200;
 
 /*---------------------------------- Functions ------------------------------*/
 
@@ -41,9 +40,11 @@ const int16_t maxStorageSizeInBytes = 200;
 RealStorage::RealStorage():
 m_Count(0),
 m_Offset(0),
-m_MaxStorageSizeInBytes(maxStorageSizeInBytes)    //100 words
+m_MaxStorageSizeInBytes(200),    //100 words
+m_defaultCount(999),            //0x03e7
+m_pStorage(0)
 {
-    pStorage = new EEPROMClass;
+    m_pStorage = new EEPROMClass;
 }
 
 /*!Function         RealStorage::~RealStorage
@@ -53,9 +54,9 @@ m_MaxStorageSizeInBytes(maxStorageSizeInBytes)    //100 words
 */
 RealStorage::~RealStorage()
 {
-    if(pStorage != 0)
+    if(m_pStorage != 0)
     {
-        delete pStorage;
+        delete m_pStorage;
     }
 }
 
@@ -71,9 +72,9 @@ void
 RealStorage::resetStorage(void)
 {
     //printf("resetStorage\n");
-    for(int16_t addr = 0x0000; addr < maxStorageSizeInBytes; addr+=2)
+    for(int16_t addr = 0x0000; addr < m_MaxStorageSizeInBytes; addr+=2)
     {
-        pStorage->writeInt((int)addr, defaultCount);
+        m_pStorage->writeInt((int)addr, m_defaultCount);
     }
     m_Offset = 0;
 }
@@ -103,16 +104,16 @@ RealStorage::getStoredCount(void)
 {
     for(int16_t addr = 0x0000; addr < m_MaxStorageSizeInBytes; addr+=2)
     {
-        m_Count = pStorage->readInt((int)addr);
+        m_Count = m_pStorage->readInt((int)addr);
         m_Offset = addr+2; //next place to write next update
 
-    	if(m_Count >= defaultCount)
+    	if(m_Count >= m_defaultCount)
         {
         	if(addr > 0)
         	{
                 m_Offset = addr; //next place to write next update
         		addr-=2;		  //address of last valid value
-				m_Count = pStorage->readInt((int)addr);  //last valid value
+				m_Count = m_pStorage->readInt((int)addr);  //last valid value
         	}
         	else //defaults
         	{
@@ -140,6 +141,6 @@ RealStorage::storeCount(int16_t value)
 		resetStorage();
 	}
     //printf("storeCount:%d at %d\n", value, m_Offset);
-    pStorage->writeInt((int)m_Offset, value);
+    m_pStorage->writeInt((int)m_Offset, value);
     m_Offset+=2;
 }

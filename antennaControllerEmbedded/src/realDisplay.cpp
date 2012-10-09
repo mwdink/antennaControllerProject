@@ -21,6 +21,7 @@ realDisplay.cpp
 #include "realDisplay.hpp"
 #include "LiquidCrystal.h"
 #include "stdio.h"
+#include <math.h>
 
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
 /*-------------------------- Typedefs and structs ---------------------------*/
@@ -32,7 +33,6 @@ static const uint8_t ROW1 = (uint8_t)0;
 static const uint8_t ROW2 = (uint8_t)ROW1+1;
 static const uint8_t COLUMN0 = (uint8_t)0;
 static const uint8_t COLUMN_PLUS_MINUS = (uint8_t)12;
-static const uint8_t COLUMN_COUNT = (uint8_t)13;
 static const uint8_t TOTALROWS = (uint8_t)2;
 static const uint8_t TOTALCOLUMNS = (uint8_t)16;
 
@@ -52,6 +52,7 @@ const char blankDirectionMsg[] = "    ";
 const char idleMsg[]  = "Idle";
 const char upMsg[]    = " Up ";
 const char downMsg[]  = "Down";
+const char negativeMsg[]  = "-";
 
 #if 0  //2 line, 16 character display
 **N7WA  Mobile**
@@ -149,8 +150,52 @@ RealDisplay::displayDirection(char *msg)
 void
 RealDisplay::displayCount(int16_t count)
 {
+    char *pZeroPad = 0;
+    uint16_t absCount = abs(count);
+
     pDisplay->setCursor(COLUMN_PLUS_MINUS, ROW2);
     pDisplay->print(blankCountMsg);
+
+    //display plus/minus and any padding
+    if(count < 0)
+    {
+        pDisplay->setCursor(COLUMN_PLUS_MINUS, ROW2);
+        pDisplay->print(negativeMsg);
+
+        if(count > -100)
+        {
+            if(count > -10)
+            {
+                pZeroPad = (char *)twoZeroPad;
+            }
+            else
+            {
+                pZeroPad = (char *)oneZeroPad;
+            }
+        }
+    }
+    else
+    {
+        if(count < 100)
+        {
+            if(count < 10)
+            {
+                pZeroPad = (char *)twoZeroPad;
+            }
+            else
+            {
+                pZeroPad = (char *)oneZeroPad;
+            }
+        }
+    }
+
+    //display padding
+    if(pZeroPad != 0)
+    {
+        pDisplay->print(pZeroPad);
+    }
+
+    pDisplay->print(absCount);
 }
 
 

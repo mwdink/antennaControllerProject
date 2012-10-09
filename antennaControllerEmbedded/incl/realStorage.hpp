@@ -28,6 +28,8 @@ realStorage.hpp
 /*-------------------------- Typedefs and structs ---------------------------*/
 /*----------------------- Declarations (externs only) -----------------------*/
 /*------------------------------ Declarations -------------------------------*/
+class EEPROMClass;
+
 /*------------------------------- Prototypes --------------------------------*/
 class RealStorage
 {
@@ -46,6 +48,9 @@ protected:
     int16_t  m_Count;
     uint16_t m_Offset;
     const uint8_t m_MaxStorageSizeInBytes;
+    const int16_t m_defaultCount;
+    EEPROMClass *m_pStorage;
+
 };
 
 #endif /* REALSTORAGE_HPP_ */

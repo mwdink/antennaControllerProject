@@ -26,14 +26,6 @@
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
 /*-------------------------- Typedefs and structs ---------------------------*/
 /*----------------------- Declarations (externs only) -----------------------*/
-/* these are all used as digital GPIO */
-extern const uint8_t switchUp;
-extern const uint8_t switchDown;
-extern const uint8_t resetCountSwitch;
-
-/* this needs to be an external interrupt supported pin */
-extern const uint8_t reedRelay;
-
 /*------------------------------ Declarations -------------------------------*/
 /*------------------------------- Prototypes --------------------------------*/
 class RealSwitches: public SwitchInterface
@@ -50,7 +42,11 @@ public:
     void toggleTestPin(void);
 #endif
 
-private:
+protected:
+    uint8_t switchUp;
+    uint8_t switchDown;
+    uint8_t resetCountSwitch;
+
 };
 
 

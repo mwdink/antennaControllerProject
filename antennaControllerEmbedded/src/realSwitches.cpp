@@ -26,19 +26,6 @@
 /*-------------------------- Typedefs and structs ---------------------------*/
 /*----------------------- Declarations (externs only) -----------------------*/
 /*------------------------------ Declarations -------------------------------*/
-
-/* these are all used as digital GPIO */
-const uint8_t switchUp      = 14;       // A0 Arduino analog port 0
-const uint8_t switchDown    = 15;       // A1 Arduino analog port 1
-const uint8_t resetCountSwitch  = 18;   // A4 Arduino analog port 4
-
-
-
-//not a user switch but supported in this file
-/* this needs to be an external interrupt supported pin */
-const uint8_t reedRelay =   2;      // Arduino digital pin 2
-//note: interrupt 0 is digital pin 2
-const uint8_t interrupt0 = 0;
 /*---------------------------------- Functions ------------------------------*/
 
 
@@ -48,7 +35,12 @@ const uint8_t interrupt0 = 0;
 *   \par Purpose    ctor
 */
 RealSwitches::RealSwitches()
-{}
+{
+    /* digital GPIO */
+    switchUp      = 14;       // A0 Arduino analog port 0
+    switchDown    = 15;       // A1 Arduino analog port 1
+    resetCountSwitch  = 18;   // A4 Arduino analog port 4
+}
 
 
 /*!Function         RealSwitches::getMotorControlSwitches

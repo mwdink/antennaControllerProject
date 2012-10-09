@@ -26,11 +26,6 @@
 /*-------------------------- Typedefs and structs ---------------------------*/
 /*----------------------- Declarations (externs only) -----------------------*/
 /*------------------------------ Declarations -------------------------------*/
-
-/* these are all used as digital GPIO */
-const uint8_t motorUp   =   16;         // A2 Arduino analog port 2
-const uint8_t motorDown =   17;         // A3 Arduino analog port 3
-
 /*---------------------------------- Functions ------------------------------*/
 
 
@@ -40,7 +35,11 @@ const uint8_t motorDown =   17;         // A3 Arduino analog port 3
 *   \par Purpose    ctor
 */
 RealMotor::RealMotor()
-{}
+{
+    /* digital GPIO */
+    motorUp   =   16;         // A2 Arduino analog port 2
+    motorDown =   17;         // A3 Arduino analog port 3
+}
 
 
 

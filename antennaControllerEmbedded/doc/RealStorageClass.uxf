@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>40</x>
+      <y>20</y>
+      <w>410</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>RealStorage
+--
+#m_Count : int16_t
+#m_Offset :     uint16_t
+#m_MaxStorageSizeInBytes : const uint8_t
+#m_defaultCount : const int16_t
+#m_pStorage : EEPROMClass * 
+ 
+--
++resetStorage(void) : void
++getStoredCount(void) : int16_t
++storeCount(int16_t value) : void
++getMaxStorageSizeInBytes(void) : uint8_t 
++getOffset(void) : uint16_t
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

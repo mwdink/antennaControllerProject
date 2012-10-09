@@ -44,6 +44,11 @@ const uint32_t ticksFor20mSec = 2;              /* 20 msec */
 const uint32_t ticksFor30mSec = 3;              /* 30 msec */
 const uint32_t ticksFor100mSec = 10;            /* 100 msec */
 
+/* this needs to be an external interrupt supported pin */
+const uint8_t reedRelay =   2;      // Arduino digital pin 2
+//note: interrupt 0 is digital pin 2
+const uint8_t interrupt0 = 0;
+
 RealSwitches realSwitches;
 RealMotor realMotor;
 RealStorage realStorage;

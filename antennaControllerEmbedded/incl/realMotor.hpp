@@ -26,10 +26,6 @@
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
 /*-------------------------- Typedefs and structs ---------------------------*/
 /*----------------------- Declarations (externs only) -----------------------*/
-/* these are all used as digital GPIO */
-extern const uint8_t motorUp;
-extern const uint8_t motorDown;
-
 /*------------------------------ Declarations -------------------------------*/
 /*------------------------------- Prototypes --------------------------------*/
 class RealMotor: public MotorInterface
@@ -42,6 +38,10 @@ public:
     void runMotorUp(void);
     void runMotorDown(void);
     void setMotorIdle(void);
+
+protected:
+    uint8_t motorUp;
+    uint8_t motorDown;
 
 private:
 };
