@@ -56,7 +56,7 @@ public:
     ~motorControlHsm();
 
     void setMotorInterface(MotorInterface *motorInterface);
-    void setMotorPulseCount(int16_t newCount);
+    int16_t setMotorPulseCount(int16_t newCount);
     int16_t getMotorPulseCount(void);
 
 protected:

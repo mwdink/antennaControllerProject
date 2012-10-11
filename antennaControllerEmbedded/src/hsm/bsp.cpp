@@ -2,7 +2,7 @@
 /** \file
     bsp.cpp
 
-!PURPOSE:               interface between hardware and state machines
+!PURPOSE:       interface between hardware and state machines
 !SUBSYSTEM:
 !DEPENDENCIES, LIMITATIONS & DESIGN NOTES:
 
@@ -37,7 +37,8 @@ Q_DEFINE_THIS_FILE
 /*----------------------- Declarations (externs only) -----------------------*/
 /*------------------------------ Declarations -------------------------------*/
 uint8_t l_TIMER2_COMPA;
-uint32_t tickCount;
+uint32_t tickCount = 0;
+int16_t currentCount = 0;
 
 uint32_t lastInterruptTick = 0;
 const uint32_t ticksFor20mSec = 2;              /* 20 msec */
@@ -186,7 +187,7 @@ QP::QF::onStartup(void)
     attachInterrupt(interrupt0, reedRelayISR, FALLING);
     realSwitches.initializeSwitchHardware();
     realMotor.initializeMotorHardware();
-    pMotorControlObj->setMotorPulseCount(realStorage.getStoredCount());
+    currentCount = pMotorControlObj->setMotorPulseCount(realStorage.getStoredCount());
 }
 
 
@@ -409,7 +410,10 @@ processSwitches(void)
         if(resetSwitchStatus == RESET_SWITCH_DOWN)
         {
             realStorage.resetStorage();
-            pMotorControlObj->setMotorPulseCount(realStorage.getStoredCount());
+            currentCount = 0;
+            //currentCount = pMotorControlObj->setMotorPulseCount(realStorage.getStoredCount());
+            pRealDisplay->updateDisplay(DISPLAY_IDLE, 0);
+            pRealDisplay->updateDisplay(DISPLAY_COUNT, currentCount);
         }
     }
 }
@@ -437,18 +441,20 @@ processCountUpdate(void)
         }
 
         lastCount = count;
+        currentCount = count;
         realStorage.storeCount(count);
 
         if(pRealDisplay)
         {
             if(true == countIncreasing)
             {
-                pRealDisplay->updateDisplay(DISPLAY_DOWN, count);
+                pRealDisplay->updateDisplay(DISPLAY_DOWN, 0);
             }
             else
             {
-                pRealDisplay->updateDisplay(DISPLAY_UP, count);
+                pRealDisplay->updateDisplay(DISPLAY_UP, 0);
             }
+            pRealDisplay->updateDisplay(DISPLAY_COUNT, currentCount);
         }
     }
 }
@@ -471,6 +477,8 @@ initializeDisplay(void)
     {
         pRealDisplay->updateDisplay(DISPLAY_CONFIG, 0);
         pRealDisplay->updateDisplay(DISPLAY_BANNER, 0);
+        pRealDisplay->updateDisplay(DISPLAY_IDLE, 0);
+        pRealDisplay->updateDisplay(DISPLAY_COUNT, currentCount);
     }
 }
 

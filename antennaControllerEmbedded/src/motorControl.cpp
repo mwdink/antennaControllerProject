@@ -107,13 +107,14 @@ motorControlHsm::setMotorInterface(MotorInterface *motorInterface)
 
 /*!Function         motorControlHsm::setMotorPulseCount
 *   \param          int16_t newCount
-*   \return         void
+*   \return         int16_t
 *   \par Purpose    update the pulse count to a new value
 */
-void
+int16_t
 motorControlHsm::setMotorPulseCount(int16_t newCount)
 {
     m_pulseCount = newCount;
+    return m_pulseCount;
 }
 
 

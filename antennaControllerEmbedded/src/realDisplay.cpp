@@ -46,8 +46,8 @@ static const uint8_t LCD_D7 = (uint8_t)4;       //Arduino digital pin 4
 
 const char headerMsg[] = "N7WA  Mobile";  //keep this even for ease of centering
 const char blankCountMsg[] = "    ";
-const char twoZeroPad[] = "00 ";
-const char oneZeroPad[] = "0  ";
+const char twoZeroPad[] = "00";
+const char oneZeroPad[] = "0";
 const char blankDirectionMsg[] = "    ";
 const char idleMsg[]  = "Idle";
 const char upMsg[]    = " Up ";
@@ -156,7 +156,7 @@ RealDisplay::displayCount(int16_t count)
     pDisplay->setCursor(COLUMN_PLUS_MINUS, ROW2);
     pDisplay->print(blankCountMsg);
 
-    //display plus/minus and any padding
+    //display minus (if needed) plus any zero padding
     if(count < 0)
     {
         pDisplay->setCursor(COLUMN_PLUS_MINUS, ROW2);
@@ -164,30 +164,26 @@ RealDisplay::displayCount(int16_t count)
 
         if(count > -100)
         {
+            pZeroPad = (char *)oneZeroPad;
             if(count > -10)
             {
                 pZeroPad = (char *)twoZeroPad;
             }
-            else
-            {
-                pZeroPad = (char *)oneZeroPad;
-            }
         }
     }
-    else
+    else  //count >= 0
     {
         if(count < 100)
         {
+            pZeroPad = (char *)oneZeroPad;
             if(count < 10)
             {
                 pZeroPad = (char *)twoZeroPad;
             }
-            else
-            {
-                pZeroPad = (char *)oneZeroPad;
-            }
         }
     }
+
+    pDisplay->setCursor(COLUMN_PLUS_MINUS+1, ROW2);
 
     //display padding
     if(pZeroPad != 0)
@@ -195,6 +191,7 @@ RealDisplay::displayCount(int16_t count)
         pDisplay->print(pZeroPad);
     }
 
+    //pDisplay->print("000");
     pDisplay->print(absCount);
 }
 
