@@ -189,7 +189,7 @@ switchControlHsm::upPushedState(switchControlHsm *me, QP::QEvt const *e)
     {
         case Q_ENTRY_SIG:
         {
-            BSP_display("switch, upPushedState-ENTRY\n");
+            //BSP_display("switch, upPushedState-ENTRY\n");
             BSP_addMotorEvent(MOTOR_UP_SIG);
             me->m_currentSwitchControlState = SWITCH_CONTROL_HSM_UP;
             return Q_HANDLED();
@@ -227,7 +227,7 @@ switchControlHsm::downPushedState(switchControlHsm *me, QP::QEvt const *e)
     {
         case Q_ENTRY_SIG:
         {
-            BSP_display("switch, downPushedState-ENTRY\n");
+            //BSP_display("switch, downPushedState-ENTRY\n");
             BSP_addMotorEvent(MOTOR_DOWN_SIG);
             me->m_currentSwitchControlState = SWITCH_CONTROL_HSM_DOWN;
             return Q_HANDLED();

@@ -28,9 +28,6 @@
 
 /*----------------- Symbolic Constants and Macros (defines) -----------------*/
 Q_DEFINE_THIS_FILE
-#define USER_LED_ON()      (PORTB |= (1 << (5)))
-#define USER_LED_OFF()     (PORTB &= ~(1 << (5)))
-#define USER_LED_TOGGLE()  (PORTB ^= (1 << (5)))
 #define TICK_DIVIDER       ((F_CPU / BSP_TICKS_PER_SEC / 1024) - 1)
 
 /*-------------------------- Typedefs and structs ---------------------------*/
@@ -46,9 +43,10 @@ const uint32_t ticksFor30mSec = 3;              /* 30 msec */
 const uint32_t ticksFor100mSec = 10;            /* 100 msec */
 
 /* this needs to be an external interrupt supported pin */
-const uint8_t reedRelay =   2;      // Arduino digital pin 2
+const uint8_t reedRelay =   2;      //Arduino digital pin 2
 //note: interrupt 0 is digital pin 2
 const uint8_t interrupt0 = 0;
+const uint8_t onBoardLED = 13;      //Arduino digital pin 13
 
 RealSwitches realSwitches;
 RealMotor realMotor;
@@ -59,6 +57,7 @@ void reedRelayISR(void);
 void processSwitches(void);
 void processCountUpdate(void);
 void initializeDisplay(void);
+void toggleTestLED(void);
 
 /*---------------------------------- Functions ------------------------------*/
 
@@ -362,6 +361,12 @@ BSP_dispatchMotorEvent(void)
     {
         pSwitchEvent->sig = (QP::QSignal)motorEventSigPool[motorEventTail];
         motorControlHsmObj->dispatch(pSwitchEvent);
+
+        if(MOTOR_MAGNET_SIG == motorEventSigPool[motorEventTail])
+        {
+            toggleTestLED();
+        }
+
         motorEventSigPool[motorEventTail] = IGNORE_SIG;
         ++motorEventTail;
         if(MAXEVENTS == motorEventTail)
@@ -411,7 +416,6 @@ processSwitches(void)
         {
             realStorage.resetStorage();
             currentCount = 0;
-            //currentCount = pMotorControlObj->setMotorPulseCount(realStorage.getStoredCount());
             pRealDisplay->updateDisplay(DISPLAY_IDLE, 0);
             pRealDisplay->updateDisplay(DISPLAY_COUNT, currentCount);
         }
@@ -483,3 +487,24 @@ initializeDisplay(void)
 }
 
 
+/*!Function         toggleTestLED
+*   \param          void
+*   \return         void
+*   \par Purpose    just gives an indication of activity on the
+*                   reed relay - no functional use for device
+*/
+void
+toggleTestLED(void)
+{
+    static uint8_t toggle = LOW;
+
+    if(LOW == toggle)
+    {
+        toggle = HIGH;
+    }
+    else
+    {
+        toggle = LOW;
+    }
+    digitalWrite(onBoardLED, toggle);
+}
