@@ -54,9 +54,9 @@ void
 RealMotor::initializeMotorHardware(void)
 {
     pinMode(motorUp, OUTPUT);
-    digitalWrite(motorUp, HIGH);
+    digitalWrite(motorUp, LOW);
     pinMode(motorDown, OUTPUT);
-    digitalWrite(motorDown, HIGH);
+    digitalWrite(motorDown, LOW);
 }
 
 /*!Function         RealMotor::runMotorUp
@@ -67,8 +67,8 @@ RealMotor::initializeMotorHardware(void)
 void
 RealMotor::runMotorUp(void)
 {
-    digitalWrite(motorUp, LOW);
-    digitalWrite(motorDown, HIGH);
+    digitalWrite(motorUp, HIGH);
+    digitalWrite(motorDown, LOW);
 }
 
 /*!Function         RealMotor::runMotorDown
@@ -79,8 +79,8 @@ RealMotor::runMotorUp(void)
 void
 RealMotor::runMotorDown(void)
 {
-    digitalWrite(motorUp, HIGH);
-    digitalWrite(motorDown, LOW);
+    digitalWrite(motorUp, LOW);
+    digitalWrite(motorDown, HIGH);
 }
 
 /*!Function         RealMotor::setMotorIdle
@@ -91,8 +91,8 @@ RealMotor::runMotorDown(void)
 void
 RealMotor::setMotorIdle(void)
 {
-    digitalWrite(motorUp, HIGH);
-    digitalWrite(motorDown, HIGH);
+    digitalWrite(motorUp, LOW);
+    digitalWrite(motorDown, LOW);
 }
 
 

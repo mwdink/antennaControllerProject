@@ -298,22 +298,22 @@ TEST(noSetUp, motorHardware)
     CHECK_EQUAL(0xff, mockPinModes[motorDown]);
 
     motor.initializeMotorHardware();
-    CHECK_EQUAL(HIGH, mockDigitalPins[motorUp]);
-    CHECK_EQUAL(HIGH, mockDigitalPins[motorDown]);
+    CHECK_EQUAL(LOW, mockDigitalPins[motorUp]);
+    CHECK_EQUAL(LOW, mockDigitalPins[motorDown]);
     CHECK_EQUAL(OUTPUT, mockPinModes[motorUp]);
     CHECK_EQUAL(OUTPUT, mockPinModes[motorDown]);
 
     motor.runMotorDown();
-    CHECK_EQUAL(LOW, mockDigitalPins[motorDown]);
-    CHECK_EQUAL(HIGH, mockDigitalPins[motorUp]);
-
-    motor.runMotorUp();
     CHECK_EQUAL(HIGH, mockDigitalPins[motorDown]);
     CHECK_EQUAL(LOW, mockDigitalPins[motorUp]);
 
-    motor.setMotorIdle();
-    CHECK_EQUAL(HIGH, mockDigitalPins[motorDown]);
+    motor.runMotorUp();
+    CHECK_EQUAL(LOW, mockDigitalPins[motorDown]);
     CHECK_EQUAL(HIGH, mockDigitalPins[motorUp]);
+
+    motor.setMotorIdle();
+    CHECK_EQUAL(LOW, mockDigitalPins[motorDown]);
+    CHECK_EQUAL(LOW, mockDigitalPins[motorUp]);
 }
 
 

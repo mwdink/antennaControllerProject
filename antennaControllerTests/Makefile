@@ -4,7 +4,7 @@ CODE_BASE =		C:/Users/dinkem1/Codebase/antennaControllerProject/
 #CODE_BASE =			C:/Codebase/eclipse_avr/antennaController/
 SRC_CODE_PATH =		$(CODE_BASE)antennaControllerEmbedded/
 TEST_CODE_PATH =	$(CODE_BASE)antennaControllerTests/
-CPPUTEST_LIB_PATH =	lib/CppUTest/
+CPPUTEST_LIB_PATH =	$(TEST_CODE_PATH)lib/CppUTest/
 QP_LIB_PATH =		lib/cygwin/dbg/
 
 CXXPATH =  
